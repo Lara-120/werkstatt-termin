@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Termin buchen – Ihre Werkstatt</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #E8270A;
+    --dark: #0f0f0f;
+    --dark2: #1a1a1a;
+    --dark3: #242424;
+    --steel: #2e2e2e;
+    --light: #f5f0eb;
+    --muted: #888;
+    --accent: #FF6B35;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--light);
+    font-family: 'Barlow', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BACKGROUND TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 80px,
+        rgba(255,255,255,0.015) 80px,
+        rgba(255,255,255,0.015) 81px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 80px,
+        rgba(255,255,255,0.015) 80px,
+        rgba(255,255,255,0.015) 81px
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrapper {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* LEFT PANEL */
+  .left-panel {
+    background: var(--red);
+    padding: 60px 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .left-panel::after {
+    content: '';
+    position: absolute;
+    bottom: -120px;
+    right: -80px;
+    width: 400px;
+    height: 400px;
+    border: 60px solid rgba(0,0,0,0.12);
+    border-radius: 50%;
+  }
+
+  .left-panel::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    left: -60px;
+    width: 280px;
+    height: 280px;
+    border: 40px solid rgba(0,0,0,0.1);
+    border-radius: 50%;
+  }
+
+  .logo-area {
+    position: relative;
+    z-index: 2;
+  }
+
+  .logo-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+    opacity: 0.9;
+  }
+
+  .workshop-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    opacity: 0.8;
+    margin-bottom: 4px;
+  }
+
+  .tagline {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 52px;
+    font-weight: 800;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+  }
+
+  .tagline span {
+    display: block;
+    opacity: 0.5;
+    font-size: 38px;
+  }
+
+  .services-preview {
+    position: relative;
+    z-index: 2;
+  }
+
+  .service-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    animation: slideInLeft 0.6s ease both;
+  }
+
+  .service-item:nth-child(1) { animation-delay: 0.1s; }
+  .service-item:nth-child(2) { animation-delay: 0.2s; }
+  .service-item:nth-child(3) { animation-delay: 0.3s; }
+
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .service-dot {
+    width: 8px;
+    height: 8px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .service-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .service-desc {
+    font-size: 13px;
+    opacity: 0.6;
+    margin-top: 1px;
+  }
+
+  .left-footer {
+    font-size: 12px;
+    opacity: 0.5;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* RIGHT PANEL – FORM */
+  .right-panel {
+    padding: 60px 50px;
+    background: var(--dark2);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .form-header {
+    margin-bottom: 40px;
+    animation: fadeUp 0.5s ease both 0.2s;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .form-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .form-subtitle {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group:nth-child(1) { animation-delay: 0.25s; }
+  .form-group:nth-child(2) { animation-delay: 0.3s; }
+  .form-group:nth-child(3) { animation-delay: 0.35s; }
+  .form-group:nth-child(4) { animation-delay: 0.4s; }
+  .form-group:nth-child(5) { animation-delay: 0.45s; }
+  .form-group:nth-child(6) { animation-delay: 0.5s; }
+  .form-group:nth-child(7) { animation-delay: 0.55s; }
+
+  label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  input, select, textarea {
+    background: var(--dark3);
+    border: 1px solid var(--steel);
+    color: var(--light);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    padding: 13px 16px;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+    cursor: pointer;
+  }
+
+  select option {
+    background: var(--dark3);
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--red);
+    background: #1e1e1e;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: #555;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.4);
+    cursor: pointer;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  /* SERVICE SELECTOR */
+  .service-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .service-card {
+    background: var(--dark3);
+    border: 1px solid var(--steel);
+    border-radius: 4px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .service-card:hover {
+    border-color: #555;
+    background: #1e1e1e;
+  }
+
+  .service-card.selected {
+    border-color: var(--red);
+    background: rgba(232, 39, 10, 0.08);
+  }
+
+  .service-card input[type="radio"] {
+    display: none;
+  }
+
+  .service-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .service-card-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .service-card-time {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* DIVIDER */
+  .form-divider {
+    grid-column: 1 / -1;
+    height: 1px;
+    background: var(--steel);
+    margin: 4px 0;
+  }
+
+  /* SUBMIT */
+  .submit-btn {
+    grid-column: 1 / -1;
+    background: var(--red);
+    color: white;
+    border: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 18px 32px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 8px;
+    animation: fadeUp 0.5s ease both 0.6s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .submit-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0);
+    transition: background 0.2s;
+  }
+
+  .submit-btn:hover { background: #c9200a; }
+  .submit-btn:hover::after { background: rgba(255,255,255,0.05); }
+  .submit-btn:active { transform: scale(0.99); }
+
+  .submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  /* SUCCESS STATE */
+  .success-overlay {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 20px;
+    padding: 40px 20px;
+  }
+
+  .success-overlay.visible {
+    display: flex;
+  }
+
+  .success-icon {
+    width: 72px;
+    height: 72px;
+    background: var(--red);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.5); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .success-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .success-text {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 300px;
+    line-height: 1.6;
+  }
+
+  .success-detail {
+    background: var(--dark3);
+    border: 1px solid var(--steel);
+    border-radius: 4px;
+    padding: 16px 24px;
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.8;
+    width: 100%;
+  }
+
+  .success-detail strong {
+    color: var(--light);
+    font-weight: 500;
+  }
+
+  /* ERROR */
+  .error-msg {
+    font-size: 12px;
+    color: var(--red);
+    margin-top: -4px;
+    display: none;
+  }
+
+  .error-msg.visible { display: block; }
+
+  .webhook-note {
+    grid-column: 1 / -1;
+    background: rgba(232, 39, 10, 0.08);
+    border: 1px solid rgba(232, 39, 10, 0.3);
+    border-radius: 4px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.5px;
+  }
+
+  .webhook-note code {
+    color: var(--accent);
+    font-family: monospace;
+    font-size: 11px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .page-wrapper { grid-template-columns: 1fr; }
+    .left-panel { padding: 40px 30px; min-height: auto; }
+    .tagline { font-size: 38px; }
+    .tagline span { font-size: 28px; }
+    .right-panel { padding: 40px 30px; }
+  }
+
+  @media (max-width: 500px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .service-selector { grid-template-columns: 1fr; }
+    .form-group.full { grid-column: 1; }
+    .submit-btn { grid-column: 1; }
+    .form-divider { grid-column: 1; }
+    .webhook-note { grid-column: 1; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <div class="logo-area">
+      <svg class="logo-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="24" cy="24" r="22" stroke="white" stroke-width="2.5" opacity="0.6"/>
+        <path d="M12 30 Q16 18 24 18 Q32 18 36 30" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <circle cx="16" cy="31" r="4" fill="white" opacity="0.9"/>
+        <circle cx="32" cy="31" r="4" fill="white" opacity="0.9"/>
+        <path d="M20 31 L28 31" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M22 18 L22 14 L26 14 L26 18" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="workshop-name">Ihre Kfz-Werkstatt</div>
+      <div class="tagline">
+        Termin<span>Online buchen.</span>
+      </div>
+    </div>
+
+    <div class="services-preview">
+      <div class="service-item">
+        <div class="service-dot"></div>
+        <div>
+          <div class="service-label">Reifenwechsel</div>
+          <div class="service-desc">Sommer → Winter · Winter → Sommer</div>
+        </div>
+      </div>
+      <div class="service-item">
+        <div class="service-dot"></div>
+        <div>
+          <div class="service-label">Ölwechsel</div>
+          <div class="service-desc">Inkl. Ölfilter & Sichtprüfung</div>
+        </div>
+      </div>
+      <div class="service-item">
+        <div class="service-dot"></div>
+        <div>
+          <div class="service-label">Schnell & unkompliziert</div>
+          <div class="service-desc">Bestätigung direkt per E-Mail</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="left-footer">Mo–Fr 08:00–18:00 · Sa 08:00–13:00</div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+
+    <!-- FORM -->
+    <div id="formArea">
+      <div class="form-header">
+        <div class="form-title">Ihren Termin wählen</div>
+        <div class="form-subtitle">Alle Felder ausfüllen – wir melden uns per E-Mail</div>
+      </div>
+
+      <form id="bookingForm" class="form-grid" novalidate>
+
+        <!-- Leistung -->
+        <div class="form-group full">
+          <label>Gewünschte Leistung</label>
+          <div class="service-selector">
+            <label class="service-card selected" id="card-reifen">
+              <input type="radio" name="service" value="Reifenwechsel" checked>
+              <span class="service-icon">🔄</span>
+              <div>
+                <div class="service-card-name">Reifenwechsel</div>
+                <div class="service-card-time">ca. 45 Min.</div>
+              </div>
+            </label>
+            <label class="service-card" id="card-oel">
+              <input type="radio" name="service" value="Ölwechsel">
+              <span class="service-icon">🛢️</span>
+              <div>
+                <div class="service-card-name">Ölwechsel</div>
+                <div class="service-card-time">ca. 30 Min.</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-divider"></div>
+
+        <!-- Name -->
+        <div class="form-group">
+          <label>Vorname</label>
+          <input type="text" id="vorname" placeholder="Max" required>
+          <span class="error-msg" id="err-vorname">Bitte Vorname eingeben</span>
+        </div>
+        <div class="form-group">
+          <label>Nachname</label>
+          <input type="text" id="nachname" placeholder="Mustermann" required>
+          <span class="error-msg" id="err-nachname">Bitte Nachname eingeben</span>
+        </div>
+
+        <!-- Kontakt -->
+        <div class="form-group">
+          <label>E-Mail</label>
+          <input type="email" id="email" placeholder="max@beispiel.de" required>
+          <span class="error-msg" id="err-email">Bitte gültige E-Mail eingeben</span>
+        </div>
+        <div class="form-group">
+          <label>Telefon</label>
+          <input type="tel" id="telefon" placeholder="+49 170 1234567">
+        </div>
+
+        <!-- Datum & Zeit -->
+        <div class="form-group">
+          <label>Wunschdatum</label>
+          <input type="date" id="datum" required>
+          <span class="error-msg" id="err-datum">Bitte Datum wählen</span>
+        </div>
+        <div class="form-group">
+          <label>Wunschuhrzeit</label>
+          <select id="uhrzeit" required>
+            <option value="">– Uhrzeit wählen –</option>
+            <option value="08:00">08:00 Uhr</option>
+            <option value="08:30">08:30 Uhr</option>
+            <option value="09:00">09:00 Uhr</option>
+            <option value="09:30">09:30 Uhr</option>
+            <option value="10:00">10:00 Uhr</option>
+            <option value="10:30">10:30 Uhr</option>
+            <option value="11:00">11:00 Uhr</option>
+            <option value="11:30">11:30 Uhr</option>
+            <option value="13:00">13:00 Uhr</option>
+            <option value="13:30">13:30 Uhr</option>
+            <option value="14:00">14:00 Uhr</option>
+            <option value="14:30">14:30 Uhr</option>
+            <option value="15:00">15:00 Uhr</option>
+            <option value="15:30">15:30 Uhr</option>
+            <option value="16:00">16:00 Uhr</option>
+            <option value="16:30">16:30 Uhr</option>
+            <option value="17:00">17:00 Uhr</option>
+            <option value="17:30">17:30 Uhr</option>
+          </select>
+          <span class="error-msg" id="err-uhrzeit">Bitte Uhrzeit wählen</span>
+        </div>
+
+        <!-- Fahrzeug -->
+        <div class="form-group">
+          <label>Fahrzeugmarke</label>
+          <input type="text" id="marke" placeholder="z.B. VW, BMW, Ford">
+        </div>
+        <div class="form-group">
+          <label>Kennzeichen</label>
+          <input type="text" id="kennzeichen" placeholder="z.B. B-AB 1234">
+        </div>
+
+        <!-- Nachricht -->
+        <div class="form-group full">
+          <label>Hinweise (optional)</label>
+          <textarea id="nachricht" placeholder="z.B. Felgen mitbringen, bestimmtes Öl gewünscht..."></textarea>
+        </div>
+
+        <!-- Webhook Hinweis -->
+        <div class="webhook-note">
+          ⚙️ n8n Webhook-URL hier eintragen: <code>WEBHOOK_URL</code> in Zeile ~310 im Script ersetzen
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          Termin anfragen →
+        </button>
+
+      </form>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success-overlay" id="successArea">
+      <div class="success-icon">✓</div>
+      <div class="success-title">Termin angefragt!</div>
+      <div class="success-text">
+        Ihre Anfrage ist bei uns eingegangen. Sie erhalten in Kürze eine Bestätigung per E-Mail.
+      </div>
+      <div class="success-detail" id="successDetail">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ═══════════════════════════════════════════
+  //  ↓↓↓  HIER DEINE n8n WEBHOOK URL EINTRAGEN  ↓↓↓
+  const WEBHOOK_URL = "https://DEINE-N8N-URL.de/webhook/terminbuchung";
+  // ═══════════════════════════════════════════
+
+  // Mindestdatum = heute
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('datum').setAttribute('min', today);
+
+  // Service Cards
+  const cards = document.querySelectorAll('.service-card');
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      cards.forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+    });
+  });
+
+  // Form submit
+  document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Validation
+    let valid = true;
+
+    const fields = [
+      { id: 'vorname', errId: 'err-vorname', check: v => v.trim().length > 0 },
+      { id: 'nachname', errId: 'err-nachname', check: v => v.trim().length > 0 },
+      { id: 'email', errId: 'err-email', check: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) },
+      { id: 'datum', errId: 'err-datum', check: v => v.length > 0 },
+      { id: 'uhrzeit', errId: 'err-uhrzeit', check: v => v.length > 0 },
+    ];
+
+    fields.forEach(f => {
+      const el = document.getElementById(f.id);
+      const err = document.getElementById(f.errId);
+      if (!f.check(el.value)) {
+        err.classList.add('visible');
+        el.style.borderColor = 'var(--red)';
+        valid = false;
+      } else {
+        err.classList.remove('visible');
+        el.style.borderColor = '';
+      }
+    });
+
+    if (!valid) return;
+
+    // Collect data
+    const service = document.querySelector('input[name="service"]:checked').value;
+    const payload = {
+      service,
+      vorname: document.getElementById('vorname').value.trim(),
+      nachname: document.getElementById('nachname').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      telefon: document.getElementById('telefon').value.trim(),
+      datum: document.getElementById('datum').value,
+      uhrzeit: document.getElementById('uhrzeit').value,
+      fahrzeug_marke: document.getElementById('marke').value.trim(),
+      kennzeichen: document.getElementById('kennzeichen').value.trim(),
+      nachricht: document.getElementById('nachricht').value.trim(),
+      timestamp: new Date().toISOString()
+    };
+
+    // Submit button → Loading
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Wird gesendet...';
+
+    try {
+      await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        mode: 'no-cors',
+        body: JSON.stringify(payload)
+      });
+    } catch (err) {
+      // no-cors mode: fetch "fails" silently — that's OK
+    }
+
+    // Datum formatieren
+    const [y, m, d] = payload.datum.split('-');
+    const datumFormatted = `${d}.${m}.${y}`;
+
+    // Success anzeigen
+    document.getElementById('formArea').style.display = 'none';
+    const successArea = document.getElementById('successArea');
+    successArea.classList.add('visible');
+    document.getElementById('successDetail').innerHTML = `
+      <strong>Leistung:</strong> ${payload.service}<br>
+      <strong>Datum:</strong> ${datumFormatted} um ${payload.uhrzeit} Uhr<br>
+      <strong>Name:</strong> ${payload.vorname} ${payload.nachname}<br>
+      <strong>E-Mail:</strong> ${payload.email}
+    `;
+  });
+
+  // Live-Validation on change
+  ['vorname','nachname','email','datum','uhrzeit'].forEach(id => {
+    document.getElementById(id).addEventListener('input', function() {
+      this.style.borderColor = '';
+      const errEl = document.getElementById('err-' + id);
+      if (errEl) errEl.classList.remove('visible');
+    });
+  });
+</script>
+</body>
+</html>
